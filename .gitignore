@@ -2,3 +2,4 @@ node_modules/
 logs/
 server/.env
 .idea/
+server/package-lock.json
