@@ -19,14 +19,35 @@ module.exports = class m2StockPrice {
   // m2AdjVolume,
   // m2DivCash,
   // m2SplitFactor
+  // m2M1Id
 
   constructor(jsonObj) {
     this.parseDBObj(jsonObj);
   }
+
+  static async findById(id) {
+    const query = `SELECT * FROM sana.m2StockPrice WHERE "m2Id" =${id}`;
+    const response = await db.query(query);
+    return new m2StockPrice(response.rows[0]);
+  }
+
+  static async findByTicker(ticker) {
+    const query = `SELECT * FROM sana.m2StockPrice WHERE "m2Ticker" ='${ticker}'`;
+    const response = await db.query(query);
+    return new m2StockPrice(response.rows[0]);
+  }
+
+  static async getAllStockPrice() {
+    const query = `SELECT * FROM sana.m2StockPrice`;
+    const response = await db.query(query);
+    return response.rows.map((stockPrices) => new m2StockPrice(stockPrices));
+  }
+
   parseDBObj(jsonObj) {
     if (!jsonObj) return;
     this.parseData(jsonObj);
   }
+
   parseData(jsonObj) {
     if (jsonObj.m2Id) {
       this.m2Id = jsonObj.m2Id;
@@ -79,13 +100,10 @@ module.exports = class m2StockPrice {
         ? jsonObj.m2SplitFactor
         : jsonObj.splitFactor;
     }
+    if (jsonObj.m2M1Id) {
+      this.m2M1Id = jsonObj.m2M1Id;
+    }
   }
-
-  static findById(id) {}
-
-  static findByTicker(ticker) {}
-
-  static getAllStocks() {}
 
   async save() {
     let client;

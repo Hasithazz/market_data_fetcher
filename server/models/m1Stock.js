@@ -16,12 +16,22 @@ module.exports = class M1Stock {
     this.parseDBObj(jsonObj);
   }
 
-  static getAllStocks() {}
+  static async getAllStocks() {
+    const query = `SELECT * FROM sana.m1stock`;
+
+    const response = await db.query(query);
+    return response.rows.map((stock) => new M1Stock(stock));
+  }
 
   static async findById(id) {
-    const query = `
-            SELECT * FROM sana.m1stock where "m1Id" = '${id}';
-        `;
+    const query = `SELECT * FROM sana.m1stock where "m1Id" = '${id}';`;
+
+    const response = await db.query(query);
+    return new M1Stock(response.rows[0]);
+  }
+
+  static async findByTicker(ticker) {
+    const query = `SELECT * FROM sana.m1stock where "m1Ticker" = '${ticker}';`;
 
     const response = await db.query(query);
 
@@ -31,16 +41,6 @@ module.exports = class M1Stock {
   parseDBObj(jsonObj) {
     if (!jsonObj) return;
     this.parseData(jsonObj);
-  }
-
-  static async findByTicker(ticker) {
-    const query = `
-            SELECT * FROM sana.m1stock where "m1Ticker" = '${ticker}';
-        `;
-
-    const response = await db.query(query);
-
-    return response.rows[0];
   }
 
   parseDBObj(jsonObj) {
