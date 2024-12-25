@@ -47,7 +47,7 @@ async function createNewStockPrice(ticker, response, stock) {
 }
 
 exports.getStock = async (req, res, next) => {
-  const ticker = req.params.ticker;
+  const ticker = req.params.ticker.toUpperCase();
   let response = new Response('Failed', {}, 500);
   try {
     let stock = await Stock.findByTicker(ticker);
@@ -82,7 +82,7 @@ exports.getAllStocks = async (req, res, next) => {
 };
 
 exports.getStockPriceEod = async (req, res, next) => {
-  const ticker = req.params.ticker;
+  const ticker = req.params.ticker.toUpperCase();
 
   let response = new Response('Failed', {}, 500);
   // TODO: Check if stockPrice is in DB if not fetch from Tiingo then save to DB
@@ -92,7 +92,7 @@ exports.getStockPriceEod = async (req, res, next) => {
     logger.info(
       'Stock price found in DB stock price: ' + JSON.stringify(m2StockPrice)
     );
-    return res.status(200).json(new Response('Success', m2StockPrice, 200));
+    res.status(200).json(new Response('Success', m2StockPrice, 200));
   } else {
     // Check if stock is in DB
     let stock = await Stock.findByTicker(ticker);
@@ -100,7 +100,6 @@ exports.getStockPriceEod = async (req, res, next) => {
       response = await createNewStock(ticker, response);
       if (response.status !== 201) {
         res.status(response.status).json(response);
-        return;
       }
       stock = response.data;
     }
@@ -119,6 +118,27 @@ exports.getAllStockPrices = async (req, res, next) => {
     logger.info('Fetching all stocks prices');
     stockPrices = await StockPrice.getAllStockPrice();
     logger.info('Fetched all stock prices');
+    res.status(200).json(new Response('Success', stockPrices, 200));
+  } catch (error) {
+    logger.error('Error fetching stock prices', error);
+    res.status(500).json(new Response('Failed', {}, 500));
+  }
+};
+
+exports.getStockPriceByDate = async (req, res, next) => {
+  let stockPrices = [];
+  let startDate = req.params.startDate;
+  let endDate = req.params.endDate;
+  let ticker = req.query.ticker ? req.query.ticker.toUpperCase() : '';
+  try {
+    logger.info(
+      'Fetching all stocks prices for date range ' + startDate + ' = ' + endDate
+    );
+    stockPrices = await StockPrice.getStockPriceByDate(
+      startDate,
+      endDate,
+      ticker
+    );
     res.status(200).json(new Response('Success', stockPrices, 200));
   } catch (error) {
     logger.error('Error fetching stock prices', error);

@@ -26,20 +26,30 @@ module.exports = class m2StockPrice {
   }
 
   static async findById(id) {
-    const query = `SELECT * FROM sana.m2StockPrice WHERE "m2Id" =${id}`;
+    const query = `SELECT * FROM sana.m2StockPrice WHERE "m2Id" =${id} ORDER BY "m2Date" DESC`;
     const response = await db.query(query);
     return new m2StockPrice(response.rows[0]);
   }
 
   static async findByTicker(ticker) {
-    const query = `SELECT * FROM sana.m2StockPrice WHERE "m2Ticker" ='${ticker}'`;
+    const query = `SELECT * FROM sana.m2StockPrice WHERE "m2Ticker" ='${ticker}' ORDER BY "m2Date" DESC`;
     const response = await db.query(query);
     return new m2StockPrice(response.rows[0]);
   }
 
   static async getAllStockPrice() {
-    const query = `SELECT * FROM sana.m2StockPrice`;
+    const query = `SELECT * FROM sana.m2StockPrice ORDER BY "m2Date" DESC`;
     const response = await db.query(query);
+    return response.rows.map((stockPrices) => new m2StockPrice(stockPrices));
+  }
+
+  static async getStockPriceByDate(startDate, endDate, ticker) {
+    let dyanamicWhere = '';
+    if (ticker) {
+      dyanamicWhere = ` AND "m2Ticker" = '${ticker}'`;
+    }
+    const query = `SELECT * FROM sana.m2StockPrice WHERE "m2Date" BETWEEN $1 AND $2 ${dyanamicWhere} ORDER BY "m2Date" DESC`;
+    const response = await db.query(query, [startDate, endDate]);
     return response.rows.map((stockPrices) => new m2StockPrice(stockPrices));
   }
 

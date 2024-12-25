@@ -44,3 +44,9 @@ exports.getStockPriceEod = async (ticker) => {
   logger.info(`Sending request to tiingo endpoint: ${url}`);
   return axios.get(url, headers);
 };
+
+exports.getNewsFeed = async (ticker) => {
+  const url = tiingoUrl + '/news?tickers=' + ticker;
+  logger.info(`Sending request to tiingo endpoint: ${url}`);
+  return axios.get(url, headers);
+};
