@@ -1,6 +1,12 @@
 const express = require('express');
+const stockController = require('../controllers/stockController');
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
-});
+router.get('/stocks', stockController.getAllStocks);
+router.get('/stock/:ticker', stockController.getStock);
+router.get('/stocks/price', stockController.getAllStockPrices);
+router.get('/stock/price/:ticker', stockController.getStockPriceEod); 
+router.get('/stock/price/:startDate/:endDate?', stockController.getStockPriceByDate);
+
+module.exports = router;
