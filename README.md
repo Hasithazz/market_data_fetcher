@@ -8,6 +8,7 @@ Real-time market data fetching application using the Tiingo API.
 - [Features](#features)
 - [Pre-Requisits](#pre-requisits)
 - [Installation](#installation)
+- [Configurations](#configurations)
 - [API Endpoints](#api-endpoints)
 - [WebSocket Events](#websocket-events)
 
@@ -36,7 +37,7 @@ Market Data Fetcher is a Node.js application that fetches real-time market data 
    git clone https://github.com/Hasithazz/market_data_fetcher.git
    cd market_data_fetcher
    ```
-2. Execute the sql objects inside db folder from postgres according to the following order
+2. Execute the sql objects inside "db" folder from postgres according to the following order
 
    1 - sys/ db.sql <br>
    2 - sys/ schema.sql <br>
@@ -47,7 +48,7 @@ Market Data Fetcher is a Node.js application that fetches real-time market data 
    7 - procedures/ sana.sp_insert_stockprice.proc.sql <br>
    8 - procedures/ sana.sp_insert_into_newsFeed.proc.sql
 
-3. Execute below command
+3. Execute below commands
    ```sh
    cd .\server\
    npm install
@@ -60,9 +61,32 @@ Market Data Fetcher is a Node.js application that fetches real-time market data 
    npm start-server
    ```
 
+## Configuarations
+
+Create .env file inside the SERVER folder and add following configs
+
+```
+# Node
+PORT=3000
+
+# Database
+DB_USER=postgres
+DB_HOST=localhost
+DB_NAME=sanadb
+DB_PASSWORD=your_password
+DB_PORT=5432
+
+# Tiingo API
+API_KEY=your_tiingo_api_key
+
+# Alpha Vantage API
+API_KEY_ALPHA=your_alpha_vantage_api_key
+
+```
+
 ## API Endpoints
 
-End point responses are always come as Json Object similler to below
+All requests are GET requests. End point responses are always come as Json Object similler to below
 
 ```
 {
@@ -258,7 +282,7 @@ End point responses are always come as Json Object similler to below
     <td> Date
     <td> m2Date
     <td> string
-    <td> Date of the prime
+    <td> Date of the price
     </tr>
     <tr>
     <tr>
@@ -363,7 +387,7 @@ End point responses are always come as Json Object similler to below
     <td> Date
     <td> m2Date
     <td> string
-    <td> Date of the prime
+    <td> Date of the price
     </tr>
     <tr>
     <tr>
@@ -487,7 +511,7 @@ End point responses are always come as Json Object similler to below
     <td> Date
     <td> m2Date
     <td> string
-    <td> Date of the prime
+    <td> Date of the price
     </tr>
     <tr>
     <tr>
